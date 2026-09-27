@@ -10,6 +10,7 @@ import pe.facturacion.seguridad.domain.model.Usuario;
 interface UsuarioPersistenceMapper {
 
 	@Mapping(target = "registrarIngreso", ignore = true)
+	@Mapping(target = "conPasswordHash", ignore = true)
 	Usuario aDominio(UsuarioJpaEntity entidad);
 
 	@Mapping(target = "creadoEn", ignore = true)

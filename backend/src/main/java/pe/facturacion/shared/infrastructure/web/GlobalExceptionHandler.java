@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -31,6 +32,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		ProblemDetail problema = ProblemDetail.forStatusAndDetail(estadoPara(ex.tipo()), ex.getMessage());
 		problema.setType(URI.create(TIPO_BASE + ex.codigo()));
 		problema.setProperty("codigo", ex.codigo());
+		return problema;
+	}
+
+	/** Respaldo de las validaciones de unicidad cuando dos peticiones compiten por el mismo dato. */
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	ProblemDetail manejarIntegridad(DataIntegrityViolationException ex) {
+		log.warn("Violación de integridad: {}", ex.getMostSpecificCause().getMessage());
+		ProblemDetail problema = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT,
+				"La operación entra en conflicto con datos existentes");
+		problema.setType(URI.create(TIPO_BASE + "conflicto-de-datos"));
+		problema.setProperty("codigo", "conflicto-de-datos");
 		return problema;
 	}
 
@@ -70,6 +82,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 			case CONFLICTO -> HttpStatus.CONFLICT;
 			case NO_AUTENTICADO -> HttpStatus.UNAUTHORIZED;
 			case NO_AUTORIZADO -> HttpStatus.FORBIDDEN;
+			case SERVICIO_NO_DISPONIBLE -> HttpStatus.SERVICE_UNAVAILABLE;
 		};
 	}
 

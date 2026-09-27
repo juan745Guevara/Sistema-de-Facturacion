@@ -1,0 +1,30 @@
+CREATE SCHEMA IF NOT EXISTS empresa;
+
+CREATE TABLE empresa.empresa (
+    id                     SMALLINT     PRIMARY KEY,
+    ruc                    VARCHAR(11)  NOT NULL,
+    razon_social           VARCHAR(200) NOT NULL,
+    nombre_comercial       VARCHAR(200),
+    direccion              VARCHAR(200) NOT NULL,
+    ubigeo                 VARCHAR(6)   NOT NULL,
+    departamento           VARCHAR(60)  NOT NULL,
+    provincia              VARCHAR(60)  NOT NULL,
+    distrito               VARCHAR(60)  NOT NULL,
+    codigo_pais            VARCHAR(2)   NOT NULL DEFAULT 'PE',
+    codigo_establecimiento VARCHAR(4)   NOT NULL DEFAULT '0000',
+    telefono               VARCHAR(20),
+    correo_ventas          VARCHAR(120),
+    correo_soporte         VARCHAR(120),
+    porcentaje_igv         NUMERIC(5, 2) NOT NULL,
+    bienes_selva           BOOLEAN      NOT NULL DEFAULT FALSE,
+    servicios_selva        BOOLEAN      NOT NULL DEFAULT FALSE,
+    creado_en              TIMESTAMPTZ  NOT NULL,
+    creado_por             VARCHAR(50),
+    actualizado_en         TIMESTAMPTZ  NOT NULL,
+    actualizado_por        VARCHAR(50),
+    CONSTRAINT ck_empresa_fila_unica CHECK (id = 1),
+    CONSTRAINT ck_empresa_ruc CHECK (ruc ~ '^[0-9]{11}$'),
+    CONSTRAINT ck_empresa_ubigeo CHECK (ubigeo ~ '^[0-9]{6}$'),
+    CONSTRAINT ck_empresa_establecimiento CHECK (codigo_establecimiento ~ '^[0-9]{4}$'),
+    CONSTRAINT ck_empresa_igv CHECK (porcentaje_igv >= 0 AND porcentaje_igv < 100)
+);

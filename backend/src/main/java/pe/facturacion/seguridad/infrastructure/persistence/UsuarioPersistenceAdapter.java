@@ -1,7 +1,9 @@
 package pe.facturacion.seguridad.infrastructure.persistence;
 
+import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,18 @@ class UsuarioPersistenceAdapter implements UsuarioRepositoryPort {
 	@Transactional(readOnly = true)
 	public Optional<Usuario> buscarPorUsername(String username) {
 		return repositorio.findByUsername(username).map(mapper::aDominio);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Optional<Usuario> buscarPorId(Long id) {
+		return repositorio.findById(id).map(mapper::aDominio);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Usuario> listar() {
+		return repositorio.findAll(Sort.by("nombre")).stream().map(mapper::aDominio).toList();
 	}
 
 	@Override

@@ -10,7 +10,8 @@ public class DominioException extends RuntimeException {
 		NO_ENCONTRADO,
 		CONFLICTO,
 		NO_AUTENTICADO,
-		NO_AUTORIZADO
+		NO_AUTORIZADO,
+		SERVICIO_NO_DISPONIBLE
 	}
 
 	private final TipoError tipo;
@@ -20,6 +21,14 @@ public class DominioException extends RuntimeException {
 		super(mensaje);
 		this.tipo = Objects.requireNonNull(tipo, "tipo");
 		this.codigo = Objects.requireNonNull(codigo, "codigo");
+	}
+
+	public static DominioException reglaNegocio(String codigo, String mensaje) {
+		return new DominioException(TipoError.REGLA_NEGOCIO, codigo, mensaje);
+	}
+
+	public static DominioException conflicto(String codigo, String mensaje) {
+		return new DominioException(TipoError.CONFLICTO, codigo, mensaje);
 	}
 
 	public TipoError tipo() {

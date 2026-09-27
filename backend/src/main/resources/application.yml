@@ -43,6 +43,9 @@ facturacion:
       nombre: ${ADMIN_NOMBRE:Administrador}
       username: ${ADMIN_USERNAME:}
       password: ${ADMIN_PASSWORD:}
+  consulta-documentos:
+    url: ${CONSULTA_DOCUMENTOS_URL:https://api.apifacturacion.com}
+    token: ${CONSULTA_DOCUMENTOS_TOKEN:}
   sunat:
     modo: ${SUNAT_MODO:BETA}
     url-facturacion: ${SUNAT_URL_FACTURACION:https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService}

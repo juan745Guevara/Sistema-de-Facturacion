@@ -19,6 +19,7 @@ import pe.facturacion.seguridad.application.port.out.PasswordHasherPort;
 import pe.facturacion.seguridad.application.port.out.UsuarioRepositoryPort;
 import pe.facturacion.seguridad.domain.model.Rol;
 import pe.facturacion.seguridad.domain.model.Usuario;
+import pe.facturacion.shared.domain.exception.DominioException;
 
 @ExtendWith(MockitoExtension.class)
 class CrearAdministradorInicialServiceTest {
@@ -64,7 +65,8 @@ class CrearAdministradorInicialServiceTest {
 		when(usuarios.existeAlguno()).thenReturn(false);
 
 		assertThatThrownBy(() -> servicio.crearSiNoHayUsuarios(new DatosAdministrador("Admin", "admin", "corta")))
-				.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(DominioException.class)
+				.hasMessageContaining("12");
 		verify(usuarios, never()).guardar(any());
 	}
 

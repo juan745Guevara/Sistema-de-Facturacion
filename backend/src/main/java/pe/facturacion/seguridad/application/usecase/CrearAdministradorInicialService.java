@@ -10,8 +10,6 @@ import pe.facturacion.seguridad.domain.model.Usuario;
 
 public class CrearAdministradorInicialService implements CrearAdministradorInicialUseCase {
 
-	static final int LONGITUD_MINIMA_PASSWORD = 12;
-
 	private final UsuarioRepositoryPort usuarios;
 	private final PasswordHasherPort hasher;
 
@@ -26,11 +24,7 @@ public class CrearAdministradorInicialService implements CrearAdministradorInici
 		if (usuarios.existeAlguno()) {
 			return false;
 		}
-		if (datos.password() == null || datos.password().length() < LONGITUD_MINIMA_PASSWORD) {
-			throw new IllegalArgumentException(
-					"La contraseña del administrador inicial debe tener al menos %d caracteres"
-							.formatted(LONGITUD_MINIMA_PASSWORD));
-		}
+		Usuario.validarPassword(datos.password());
 		usuarios.guardar(Usuario.nuevo(datos.nombre(), datos.username(), hasher.hashear(datos.password()), null,
 				Rol.ADMINISTRADOR));
 		return true;

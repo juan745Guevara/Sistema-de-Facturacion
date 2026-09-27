@@ -7,11 +7,13 @@ import org.springframework.context.annotation.Configuration;
 
 import pe.facturacion.seguridad.application.port.in.AutenticarUsuarioUseCase;
 import pe.facturacion.seguridad.application.port.in.CrearAdministradorInicialUseCase;
+import pe.facturacion.seguridad.application.port.in.GestionarUsuariosUseCase;
 import pe.facturacion.seguridad.application.port.out.PasswordHasherPort;
 import pe.facturacion.seguridad.application.port.out.TokenEmisorPort;
 import pe.facturacion.seguridad.application.port.out.UsuarioRepositoryPort;
 import pe.facturacion.seguridad.application.usecase.AutenticarUsuarioService;
 import pe.facturacion.seguridad.application.usecase.CrearAdministradorInicialService;
+import pe.facturacion.seguridad.application.usecase.GestionarUsuariosService;
 
 @Configuration(proxyBeanMethods = false)
 class SeguridadUseCaseConfig {
@@ -26,6 +28,11 @@ class SeguridadUseCaseConfig {
 	CrearAdministradorInicialUseCase crearAdministradorInicialUseCase(UsuarioRepositoryPort usuarios,
 			PasswordHasherPort hasher) {
 		return new CrearAdministradorInicialService(usuarios, hasher);
+	}
+
+	@Bean
+	GestionarUsuariosUseCase gestionarUsuariosUseCase(UsuarioRepositoryPort usuarios, PasswordHasherPort hasher) {
+		return new GestionarUsuariosService(usuarios, hasher);
 	}
 
 }
