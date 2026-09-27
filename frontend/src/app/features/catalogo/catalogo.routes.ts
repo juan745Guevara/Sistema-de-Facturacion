@@ -1,10 +1,20 @@
 import { Routes } from '@angular/router';
 
-import { rutaPendiente } from '../../shared/components/pagina-pendiente/ruta-pendiente';
-
 export default [
-  rutaPendiente('productos', 'Almacén de productos', 'Fase 2'),
-  rutaPendiente('categorias', 'Categorías', 'Fase 2'),
-  rutaPendiente('unidades', 'Unidades de medida', 'Fase 2'),
+  {
+    path: 'productos',
+    title: 'Almacén de productos',
+    loadComponent: () => import('./productos/productos.page').then((m) => m.ProductosPage),
+  },
+  {
+    path: 'categorias',
+    title: 'Categorías',
+    loadComponent: () => import('./categorias/categorias.page').then((m) => m.CategoriasPage),
+  },
+  {
+    path: 'unidades',
+    title: 'Unidades de medida',
+    loadComponent: () => import('./unidades/unidades.page').then((m) => m.UnidadesPage),
+  },
   { path: '', pathMatch: 'full', redirectTo: 'productos' },
 ] satisfies Routes;

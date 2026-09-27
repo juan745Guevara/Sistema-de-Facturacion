@@ -1,6 +1,6 @@
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 
-import { dniValidator, esDniValido, esRucValido, rucValidator } from './documento.validators';
+import { dniValidator, documentoSegunTipo, esDniValido, esRucValido, rucValidator } from './documento.validators';
 
 describe('validadores de documento', () => {
   it.each(['20601487871', '10472044261', '20100070970'])('acepta el RUC %s', (ruc) => {
@@ -31,5 +31,31 @@ describe('validadores de documento', () => {
     expect(new FormControl('123', rucValidator).errors).toEqual({ ruc: true });
     expect(new FormControl('123', dniValidator).errors).toEqual({ dni: true });
     expect(new FormControl(' 20601487871 ', rucValidator).errors).toBeNull();
+  });
+});
+
+describe('documentoSegunTipo', () => {
+  const errorPara = (tipoDocumento: string, numeroDocumento: string) =>
+    new FormGroup(
+      { tipoDocumento: new FormControl(tipoDocumento), numeroDocumento: new FormControl(numeroDocumento) },
+      { validators: documentoSegunTipo() },
+    ).errors;
+
+  it.each([
+    ['RUC', '20601487871'],
+    ['DNI', '47204426'],
+    ['PASAPORTE', 'ab-123456'],
+    ['SIN_DOCUMENTO', ''],
+  ])('acepta %s %s', (tipo, numero) => {
+    expect(errorPara(tipo, numero)).toBeNull();
+  });
+
+  it.each([
+    ['RUC', '20601487872', 'ruc'],
+    ['DNI', '1234567', 'dni'],
+    ['CARNET_EXTRANJERIA', '', 'requerido'],
+    ['PASAPORTE', 'AB 123', 'formato'],
+  ])('rechaza %s "%s" con el error %s', (tipo, numero, error) => {
+    expect(errorPara(tipo, numero)).toEqual({ documento: error });
   });
 });

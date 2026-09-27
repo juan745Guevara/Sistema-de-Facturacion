@@ -22,7 +22,7 @@ Sistema-de-Facturacion/
 | --- | --- | --- |
 | 0 | Reorganización y análisis del legado | Hecha |
 | 1 | Esqueleto backend y Angular | Hecha |
-| 2 | Empresa, catálogo, clientes, proveedores | Pendiente |
+| 2 | Empresa, catálogo, clientes, proveedores (y usuarios) | Hecha |
 | 3 | Ventas y SUNAT (factura y boleta) | Pendiente |
 | 4 | Notas, resumen diario y comunicación de baja | Pendiente |
 | 5 | Guías, compras y cotizaciones | Pendiente |
@@ -47,7 +47,23 @@ docker compose -f docker-compose.dev.yml --env-file .env up -d
 - Si la tabla de usuarios está vacía, se crea el administrador definido en `ADMIN_USERNAME` y `ADMIN_PASSWORD` (mínimo 12 caracteres).
 - La API queda en `http://localhost:8080/api` y la documentación en `http://localhost:8080/swagger-ui.html`.
 
+- La consulta de RUC/DNI (botón de búsqueda en empresa, clientes y proveedores) usa `CONSULTA_DOCUMENTOS_URL` y `CONSULTA_DOCUMENTOS_TOKEN`. Sin token, la API responde 503 y el resto del sistema funciona igual.
+- El certificado, las credenciales SOL y el SMTP solo se configuran con variables de entorno; no se guardan en la base de datos.
+
 Tests: `.\mvnw.cmd test`. Los de integración usan Testcontainers y se omiten si Docker no está corriendo.
+
+### Permisos por rol
+
+| Recurso | Consultar | Crear y editar | Eliminar |
+| --- | --- | --- | --- |
+| Empresa | Todos | ADMINISTRADOR | — |
+| Categorías y productos | Todos | ADMINISTRADOR, ESPECIAL | ADMINISTRADOR, ESPECIAL |
+| Unidades de medida | Todos | Activar o desactivar: ADMINISTRADOR | — |
+| Clientes | Todos | Todos | ADMINISTRADOR, ESPECIAL |
+| Proveedores | Todos | ADMINISTRADOR, ESPECIAL | ADMINISTRADOR, ESPECIAL |
+| Usuarios | ADMINISTRADOR | ADMINISTRADOR | No se eliminan, se desactivan |
+
+Un usuario desactivado conserva su token hasta que vence (8 horas).
 
 ## Cómo correr el frontend
 

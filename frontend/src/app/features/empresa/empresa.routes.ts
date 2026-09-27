@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
 
-import { rutaPendiente } from '../../shared/components/pagina-pendiente/ruta-pendiente';
-
-export default [rutaPendiente('', 'Configuración de la empresa', 'Fase 2')] satisfies Routes;
+export default [
+  { path: '', title: 'Empresa', loadComponent: () => import('./empresa.page').then((m) => m.EmpresaPage) },
+] satisfies Routes;

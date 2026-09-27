@@ -1,4 +1,3 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -8,6 +7,7 @@ import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 import { Password } from 'primeng/password';
 
+import { mensajeDeError } from '../../api/api-error';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -42,7 +42,7 @@ export class LoginPage {
       next: () => void this.router.navigateByUrl(this.destinoSeguro()),
       error: (e: unknown) => {
         this.enviando.set(false);
-        this.error.set(mensajeDeError(e));
+        this.error.set(mensajeDeError(e, 'No se pudo iniciar sesión'));
       },
     });
   }
@@ -52,17 +52,4 @@ export class LoginPage {
     const destino = this.returnUrl();
     return destino?.startsWith('/') && !destino.startsWith('//') ? destino : '/inicio';
   }
-}
-
-function mensajeDeError(error: unknown): string {
-  if (error instanceof HttpErrorResponse) {
-    if (error.status === 0) {
-      return 'No se pudo conectar con el servidor';
-    }
-    const detalle = (error.error as { detail?: unknown } | null)?.detail;
-    if (typeof detalle === 'string') {
-      return detalle;
-    }
-  }
-  return 'No se pudo iniciar sesión';
 }

@@ -4,6 +4,7 @@ import localeEsPe from '@angular/common/locales/es-PE';
 import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import Aura from '@primeuix/themes/aura';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 
 import { routes } from './app.routes';
@@ -18,5 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     providePrimeNG({ theme: { preset: Aura, options: { darkModeSelector: false } } }),
     { provide: LOCALE_ID, useValue: 'es-PE' },
+    MessageService,
+    ConfirmationService,
   ],
 };

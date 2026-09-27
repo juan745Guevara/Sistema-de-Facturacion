@@ -1,4 +1,4 @@
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -53,8 +53,8 @@ describe('rutas de la aplicación', () => {
     await harness.fixture.whenStable();
 
     expect(TestBed.inject(Router).url).toBe('/empresa');
-    expect(harness.routeNativeElement?.textContent).toContain('Configuración de la empresa');
-    expect(harness.routeNativeElement?.textContent).toContain('Fase 2');
+    expect(harness.routeNativeElement?.textContent).toContain('Datos de la empresa');
+    TestBed.inject(HttpTestingController).expectOne((r) => r.url.endsWith('/api/empresa'));
   });
 
   it('redirige secciones con subrutas a su pantalla principal', async () => {

@@ -1,0 +1,59 @@
+<div class="flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+  <div>
+    <h1 class="text-2xl font-semibold m-0">Unidades de medida</h1>
+    <small class="text-color-secondary">
+      Catálogo UNECE Rec. 20. Solo las unidades activas se ofrecen al registrar productos.
+    </small>
+  </div>
+  <div class="flex flex-wrap gap-2">
+    <p-selectbutton
+      [options]="vistas"
+      [ngModel]="vista()"
+      (ngModelChange)="vista.set($event ?? 'todas')"
+      optionLabel="label"
+      optionValue="value"
+      [allowEmpty]="false"
+      aria-label="Filtrar por estado"
+    />
+    <p-iconfield>
+      <p-inputicon styleClass="pi pi-search" />
+      <input
+        pInputText
+        type="search"
+        placeholder="Código o descripción"
+        aria-label="Buscar unidad"
+        [value]="filtro()"
+        (input)="filtro.set($any($event.target).value)"
+      />
+    </p-iconfield>
+  </div>
+</div>
+
+<p-table [value]="visibles()" [loading]="cargando()" [paginator]="true" [rows]="15" dataKey="codigo">
+  <ng-template #header>
+    <tr>
+      <th class="w-8rem">Código</th>
+      <th>Descripción</th>
+      <th class="w-8rem text-center">Activa</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-unidad>
+    <tr>
+      <td class="font-medium">{{ unidad.codigo }}</td>
+      <td>{{ unidad.descripcion }}</td>
+      <td class="text-center">
+        <p-toggleswitch
+          [ngModel]="unidad.activa"
+          (ngModelChange)="cambiar(unidad, $event)"
+          [disabled]="!puedeEditar || actualizando() === unidad.codigo"
+          [ariaLabel]="'Activar ' + unidad.descripcion"
+        />
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="3" class="text-center text-color-secondary">Sin resultados</td>
+    </tr>
+  </ng-template>
+</p-table>

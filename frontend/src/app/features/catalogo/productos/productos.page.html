@@ -1,0 +1,206 @@
+<div class="flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+  <h1 class="text-2xl font-semibold m-0">Almacén de productos</h1>
+  <div class="flex flex-wrap gap-2">
+    <p-select
+      [options]="categorias()"
+      optionLabel="nombre"
+      optionValue="id"
+      [ngModel]="categoriaFiltro()"
+      (ngModelChange)="filtrarPorCategoria($event ?? null)"
+      [showClear]="true"
+      [filter]="true"
+      filterBy="nombre"
+      placeholder="Todas las categorías"
+      ariaLabel="Filtrar por categoría"
+      styleClass="w-14rem"
+    />
+    <p-iconfield>
+      <p-inputicon styleClass="pi pi-search" />
+      <input
+        pInputText
+        type="search"
+        placeholder="Código o descripción"
+        aria-label="Buscar producto"
+        (input)="listado.buscar($any($event.target).value)"
+      />
+    </p-iconfield>
+    @if (puedeEditar) {
+      <p-button label="Nuevo" icon="pi pi-plus" (onClick)="nuevo()" />
+    }
+  </div>
+</div>
+
+<p-table
+  [value]="listado.filas()"
+  [lazy]="true"
+  (onLazyLoad)="listado.cambiarPagina($event)"
+  [paginator]="true"
+  [first]="listado.primero()"
+  [rows]="listado.tamanio()"
+  [rowsPerPageOptions]="[10, 20, 50]"
+  [totalRecords]="listado.total()"
+  [loading]="listado.cargando()"
+  dataKey="id"
+>
+  <ng-template #header>
+    <tr>
+      <th class="w-8rem">Código</th>
+      <th>Descripción</th>
+      <th>Categoría</th>
+      <th class="w-5rem">Unidad</th>
+      <th class="text-right">Precio venta</th>
+      <th class="text-right">Stock</th>
+      @if (puedeEditar) {
+        <th class="w-8rem text-right">Acciones</th>
+      }
+    </tr>
+  </ng-template>
+  <ng-template #body let-producto>
+    <tr>
+      <td class="font-medium">{{ producto.codigo }}</td>
+      <td>{{ producto.descripcion }}</td>
+      <td>{{ nombreCategoria(producto.categoriaId) }}</td>
+      <td>{{ producto.unidadMedida }}</td>
+      <td class="text-right">{{ producto.precioVenta | monto }}</td>
+      <td class="text-right">{{ producto.stock ?? 0 }}</td>
+      @if (puedeEditar) {
+        <td class="text-right white-space-nowrap">
+          <p-button
+            icon="pi pi-pencil"
+            [text]="true"
+            [rounded]="true"
+            ariaLabel="Editar {{ producto.codigo }}"
+            (onClick)="editar(producto)"
+          />
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            [text]="true"
+            [rounded]="true"
+            ariaLabel="Eliminar {{ producto.codigo }}"
+            (onClick)="eliminar(producto)"
+          />
+        </td>
+      }
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="puedeEditar ? 7 : 6" class="text-center text-color-secondary">No hay productos</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [header]="editando() ? 'Editar producto' : 'Nuevo producto'"
+  [modal]="true"
+  [visible]="dialogoAbierto()"
+  (visibleChange)="dialogoAbierto.set($event)"
+  [style]="{ width: '46rem' }"
+  [breakpoints]="{ '768px': '95vw' }"
+>
+  <form [formGroup]="formulario" (ngSubmit)="guardar()" novalidate>
+    <div class="grid formgrid p-fluid">
+      <div class="field col-12 md:col-4">
+        <label for="codigo">Código</label>
+        <input pInputText id="codigo" formControlName="codigo" maxlength="30" />
+        @if (invalido('codigo')) {
+          <small class="p-error">Ingresa el código</small>
+        }
+      </div>
+      <div class="field col-12 md:col-8">
+        <label for="categoriaId">Categoría</label>
+        <p-select
+          inputId="categoriaId"
+          formControlName="categoriaId"
+          [options]="categorias()"
+          optionLabel="nombre"
+          optionValue="id"
+          [filter]="true"
+          filterBy="nombre"
+          placeholder="Selecciona"
+          appendTo="body"
+        />
+        @if (invalido('categoriaId')) {
+          <small class="p-error">Selecciona la categoría</small>
+        }
+      </div>
+      <div class="field col-12">
+        <label for="descripcion">Descripción</label>
+        <textarea pTextarea id="descripcion" formControlName="descripcion" rows="2" maxlength="500"></textarea>
+        @if (invalido('descripcion')) {
+          <small class="p-error">Ingresa la descripción</small>
+        }
+      </div>
+      <div class="field col-12 md:col-5">
+        <label for="unidadMedida">Unidad de medida</label>
+        <p-select
+          inputId="unidadMedida"
+          formControlName="unidadMedida"
+          [options]="opcionesUnidad()"
+          optionLabel="etiqueta"
+          optionValue="valor"
+          [filter]="true"
+          filterBy="etiqueta"
+          appendTo="body"
+        />
+      </div>
+      <div class="field col-12 md:col-7">
+        <label for="tipoAfectacionIgv">Afectación del IGV</label>
+        <p-select
+          inputId="tipoAfectacionIgv"
+          formControlName="tipoAfectacionIgv"
+          [options]="afectaciones()"
+          optionLabel="etiqueta"
+          optionValue="valor"
+          appendTo="body"
+        />
+      </div>
+      <div class="field col-12 md:col-4">
+        <label for="precioVenta">Precio de venta (inc. impuestos)</label>
+        <p-inputnumber
+          inputId="precioVenta"
+          formControlName="precioVenta"
+          mode="currency"
+          currency="PEN"
+          locale="es-PE"
+          [min]="0"
+        />
+        @if (invalido('precioVenta')) {
+          <small class="p-error">Debe ser mayor que cero</small>
+        }
+      </div>
+      <div class="field col-12 md:col-4">
+        <label for="precioCompra">Precio de compra</label>
+        <p-inputnumber
+          inputId="precioCompra"
+          formControlName="precioCompra"
+          mode="currency"
+          currency="PEN"
+          locale="es-PE"
+          [min]="0"
+        />
+        @if (!editando()) {
+          <small class="text-color-secondary">Se sugiere el 70 % del precio de venta</small>
+        }
+      </div>
+      <div class="field col-12 md:col-4">
+        <label for="stock">Stock</label>
+        <p-inputnumber inputId="stock" formControlName="stock" [min]="0" [maxFractionDigits]="3" locale="es-PE" />
+      </div>
+    </div>
+
+    @if (desglose(); as d) {
+      <div class="surface-ground border-round p-3 mb-3 flex flex-wrap gap-4 text-sm" aria-live="polite">
+        <span>Valor unitario: <strong>{{ d.valorUnitario | monto }}</strong></span>
+        <span>Impuesto ({{ d.tasa }} %): <strong>{{ d.impuesto | monto }}</strong></span>
+        <span class="text-color-secondary">Referencial: el comprobante lo calcula el sistema.</span>
+      </div>
+    }
+
+    <div class="flex justify-content-end gap-2">
+      <p-button label="Cancelar" severity="secondary" [text]="true" (onClick)="dialogoAbierto.set(false)" />
+      <p-button type="submit" label="Guardar" icon="pi pi-save" [loading]="guardando()" />
+    </div>
+  </form>
+</p-dialog>

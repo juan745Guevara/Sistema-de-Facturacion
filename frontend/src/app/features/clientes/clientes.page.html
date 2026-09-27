@@ -1,0 +1,162 @@
+<div class="flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+  <h1 class="text-2xl font-semibold m-0">Clientes</h1>
+  <div class="flex flex-wrap gap-2">
+    <p-iconfield>
+      <p-inputicon styleClass="pi pi-search" />
+      <input
+        pInputText
+        type="search"
+        placeholder="Documento o nombre"
+        aria-label="Buscar cliente"
+        (input)="listado.buscar($any($event.target).value)"
+      />
+    </p-iconfield>
+    <p-button label="Nuevo" icon="pi pi-plus" (onClick)="nuevo()" />
+  </div>
+</div>
+
+<p-table
+  [value]="listado.filas()"
+  [lazy]="true"
+  (onLazyLoad)="listado.cambiarPagina($event)"
+  [paginator]="true"
+  [first]="listado.primero()"
+  [rows]="listado.tamanio()"
+  [rowsPerPageOptions]="[10, 20, 50]"
+  [totalRecords]="listado.total()"
+  [loading]="listado.cargando()"
+  dataKey="id"
+>
+  <ng-template #header>
+    <tr>
+      <th class="w-12rem">Documento</th>
+      <th>Nombre o razón social</th>
+      <th>Dirección</th>
+      <th>Contacto</th>
+      <th class="w-8rem text-right">Acciones</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-cliente>
+    <tr>
+      <td class="white-space-nowrap">
+        <span class="text-color-secondary mr-1">{{ abreviatura(cliente.tipoDocumento) }}</span>
+        {{ cliente.numeroDocumento }}
+      </td>
+      <td class="font-medium">{{ cliente.nombre }}</td>
+      <td>{{ cliente.direccion }}</td>
+      <td>
+        @if (cliente.email) {
+          <div>{{ cliente.email }}</div>
+        }
+        @if (cliente.telefono) {
+          <small class="text-color-secondary">{{ cliente.telefono }}</small>
+        }
+      </td>
+      <td class="text-right white-space-nowrap">
+        <p-button
+          icon="pi pi-pencil"
+          [text]="true"
+          [rounded]="true"
+          ariaLabel="Editar {{ cliente.nombre }}"
+          (onClick)="editar(cliente)"
+        />
+        @if (puedeEliminar) {
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            [text]="true"
+            [rounded]="true"
+            ariaLabel="Eliminar {{ cliente.nombre }}"
+            (onClick)="eliminar(cliente)"
+          />
+        }
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="5" class="text-center text-color-secondary">No hay clientes</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [header]="editando() ? 'Editar cliente' : 'Nuevo cliente'"
+  [modal]="true"
+  [visible]="dialogoAbierto()"
+  (visibleChange)="dialogoAbierto.set($event)"
+  [style]="{ width: '44rem' }"
+  [breakpoints]="{ '768px': '95vw' }"
+>
+  <form [formGroup]="formulario" (ngSubmit)="guardar()" novalidate>
+    <div class="grid formgrid p-fluid">
+      <div class="field col-12 md:col-5">
+        <label for="tipoDocumento">Tipo de documento</label>
+        <p-select
+          inputId="tipoDocumento"
+          formControlName="tipoDocumento"
+          [options]="tiposDocumento()"
+          optionLabel="descripcion"
+          optionValue="valor"
+          appendTo="body"
+        />
+      </div>
+      <div class="field col-12 md:col-7">
+        <label for="numeroDocumento">Número</label>
+        <div class="flex gap-2">
+          <input pInputText id="numeroDocumento" formControlName="numeroDocumento" maxlength="15" autocomplete="off" />
+          <p-button
+            icon="pi pi-search"
+            severity="secondary"
+            ariaLabel="Consultar en RENIEC o SUNAT"
+            pTooltip="Consultar en RENIEC/SUNAT"
+            [disabled]="!consultable()"
+            [loading]="consultando()"
+            (onClick)="consultarPadron()"
+            styleClass="w-auto"
+          />
+        </div>
+        @if (errorDocumento(); as mensaje) {
+          <small class="p-error">{{ mensaje }}</small>
+        }
+      </div>
+      <div class="field col-12">
+        <label for="nombre">Nombre o razón social</label>
+        <input pInputText id="nombre" formControlName="nombre" maxlength="200" />
+        @if (invalido('nombre')) {
+          <small class="p-error">Ingresa el nombre</small>
+        }
+      </div>
+      <div class="field col-12">
+        <label for="direccion">Dirección</label>
+        <input pInputText id="direccion" formControlName="direccion" maxlength="200" />
+      </div>
+      <div class="field col-12 md:col-5">
+        <label for="email">Correo</label>
+        <input pInputText id="email" type="email" formControlName="email" maxlength="120" />
+        @if (invalido('email')) {
+          <small class="p-error">Correo no válido</small>
+        }
+      </div>
+      <div class="field col-12 md:col-4">
+        <label for="telefono">Teléfono</label>
+        <input pInputText id="telefono" formControlName="telefono" maxlength="20" />
+      </div>
+      <div class="field col-12 md:col-3">
+        <label for="fechaNacimiento">Nacimiento</label>
+        <p-datepicker
+          inputId="fechaNacimiento"
+          formControlName="fechaNacimiento"
+          dateFormat="dd/mm/yy"
+          [maxDate]="hoy"
+          [showButtonBar]="true"
+          appendTo="body"
+        />
+      </div>
+    </div>
+    <div class="flex justify-content-end gap-2">
+      <p-button label="Cancelar" severity="secondary" [text]="true" (onClick)="dialogoAbierto.set(false)" />
+      <p-button type="submit" label="Guardar" icon="pi pi-save" [loading]="guardando()" />
+    </div>
+  </form>
+</p-dialog>

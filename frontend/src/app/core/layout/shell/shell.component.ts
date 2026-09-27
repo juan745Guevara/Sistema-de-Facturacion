@@ -2,7 +2,9 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { RouterOutlet } from '@angular/router';
 import { Avatar } from 'primeng/avatar';
 import { Button } from 'primeng/button';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { PanelMenu } from 'primeng/panelmenu';
+import { Toast } from 'primeng/toast';
 import { Toolbar } from 'primeng/toolbar';
 
 import { AuthService } from '../../auth/auth.service';
@@ -10,7 +12,7 @@ import { menuPara } from '../menu';
 
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, Avatar, Button, PanelMenu, Toolbar],
+  imports: [RouterOutlet, Avatar, Button, ConfirmDialog, PanelMenu, Toast, Toolbar],
   templateUrl: './shell.component.html',
   styleUrl: './shell.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

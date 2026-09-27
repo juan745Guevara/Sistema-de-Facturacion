@@ -38,7 +38,10 @@ const OPCIONES: OpcionMenu[] = [
   {
     label: 'Compras',
     icon: 'pi pi-inbox',
-    items: [{ label: 'Nueva compra', icon: 'pi pi-plus', routerLink: '/compras/nueva' }],
+    items: [
+      { label: 'Nueva compra', icon: 'pi pi-plus', routerLink: '/compras/nueva' },
+      { label: 'Proveedores', icon: 'pi pi-briefcase', routerLink: '/compras/proveedores' },
+    ],
   },
   {
     label: 'Guías de remisión',
