@@ -1,0 +1,21 @@
+# Laragon / Windows
+.env
+/vendor
+/node_modules
+/public/storage
+/storage/*.key
+
+# Logs
+*.log
+
+# Cache
+bootstrap/cache/*
+!bootstrap/cache/.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+Desktop.ini
