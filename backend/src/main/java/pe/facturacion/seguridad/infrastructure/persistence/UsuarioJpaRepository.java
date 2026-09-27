@@ -1,0 +1,11 @@
+package pe.facturacion.seguridad.infrastructure.persistence;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+interface UsuarioJpaRepository extends JpaRepository<UsuarioJpaEntity, Long> {
+
+	Optional<UsuarioJpaEntity> findByUsername(String username);
+
+}

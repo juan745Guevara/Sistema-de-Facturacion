@@ -1,0 +1,17 @@
+# La conexión real la inyecta Testcontainers con @ServiceConnection.
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost/sin-uso
+    username: sin-uso
+    password: sin-uso
+
+facturacion:
+  seguridad:
+    jwt:
+      secreto: secreto-solo-para-tests-no-usar-en-otro-lado-000000
+    cors:
+      origenes-permitidos: http://localhost:4200
+    admin-inicial:
+      nombre: Admin Test
+      username: admin
+      password: clave-admin-de-test

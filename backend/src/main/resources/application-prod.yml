@@ -1,0 +1,15 @@
+facturacion:
+  sunat:
+    modo: PRODUCCION
+    url-facturacion: ${SUNAT_URL_FACTURACION:https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService}
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+management:
+  endpoint:
+    health:
+      show-details: never

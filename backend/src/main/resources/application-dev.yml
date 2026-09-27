@@ -1,0 +1,17 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/facturacion}
+
+facturacion:
+  seguridad:
+    cors:
+      origenes-permitidos: ${CORS_ALLOWED_ORIGINS:http://localhost:4200}
+  sunat:
+    modo: BETA
+    url-facturacion: https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService
+
+logging:
+  level:
+    pe.facturacion: DEBUG
