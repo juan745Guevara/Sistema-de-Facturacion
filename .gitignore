@@ -1,21 +1,34 @@
-# Laragon / Windows
+# Java / Maven
+backend/target/
+*.class
+*.jar
+*.war
+.mvn/wrapper/maven-wrapper.jar
+
+# Angular / Node
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+
+# Secretos y entorno
 .env
-/vendor
-/node_modules
-/public/storage
-/storage/*.key
+.env.*
+!.env.example
+*.pfx
+*.p12
 
-# Logs
-*.log
+# XML y CDR generados (SUNAT)
+**/xml-generados/
+**/cdr-generados/
+backend/**/sunat-output/
 
-# Cache
-bootstrap/cache/*
-!bootstrap/cache/.gitignore
+# Legado no versionado
+codigo-antiguo/vendor/
 
-# IDE
-.vscode/
+# IDE y sistema
 .idea/
-
-# OS
+.vscode/
+*.log
 Thumbs.db
 Desktop.ini

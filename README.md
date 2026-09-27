@@ -1,92 +1,51 @@
-# 📄 FACTURACIÓN ELECTRÓNICA - OPENFACT
+# Sistema de Facturación Electrónica
 
-Sistema de **Facturación Electrónica gratuito** orientado a fines **educativos y académicos**, desarrollado como parte del curso **Construcción de Software I**.
+Migración de OPENFACT (facturación electrónica SUNAT, Perú) desde PHP 8 + MySQL hacia un monolito modular en Spring Boot y un frontend en Angular.
 
-El proyecto aborda conceptos clave del desarrollo de software y la facturación electrónica en el contexto del **Perú**.
+El sistema PHP original está en `codigo-antiguo/` y se usa solo como referencia. No se modifica.
 
----
+## Estructura
 
-## 🎯 Objetivos del proyecto
+```
+Sistema-de-Facturacion/
+├── codigo-antiguo/   sistema PHP actual (solo lectura)
+├── backend/          Spring Boot (desde la Fase 1)
+├── frontend/         Angular (desde la Fase 1)
+├── docs/             análisis y decisiones
+├── README.md
+└── .gitignore
+```
 
-Este software se utiliza como material de estudio para los siguientes temas:
+## Estado
 
-- Diseño de **Front-End**
-- Manejo de archivos **XML** y **CSV**
-- Respuestas asíncronas desde el servidor usando **AJAX**
-- Conexión a **bases de datos**
-- Implementación de **UBL** y **Facturación Electrónica en Perú**
+| Fase | Contenido | Estado |
+| --- | --- | --- |
+| 0 | Reorganización y análisis del legado | Hecha |
+| 1 | Esqueleto backend y Angular | Pendiente |
+| 2 | Empresa, catálogo, clientes, proveedores | Pendiente |
+| 3 | Ventas y SUNAT (factura y boleta) | Pendiente |
+| 4 | Notas, resumen diario y comunicación de baja | Pendiente |
+| 5 | Guías, compras y cotizaciones | Pendiente |
+| 6 | Reportes, dashboard, PDF, Excel y correo | Pendiente |
+| 7 | Migración de datos, README final y revisión | Pendiente |
 
----
+El análisis de reglas de negocio, tablas y flujo SUNAT está en [docs/analisis-sistema-antiguo.md](docs/analisis-sistema-antiguo.md).
 
-## ⚙️ Requisitos
+## Cómo correr el sistema antiguo
 
-Para ejecutar el sistema necesitas:
+Requiere PHP 8, MariaDB/MySQL y Apache (Laragon, XAMPP o WAMP).
 
-- **PHP 8.0 o superior**
-- **MySQL 8.0 o superior**
-- **Apache 2.4 o superior**
+1. Apuntar el document root a `codigo-antiguo/`.
+2. Restaurar `codigo-antiguo/BD/bdsistema.sql`.
+3. Ajustar la conexión en `codigo-antiguo/Conect/Conexion.php`.
+4. Abrir la aplicación en el navegador.
 
-💡 Puedes usar paquetes preconfigurados como:
-- WAMP
-- XAMPP
-- **Laragon** *(recomendado)*
+El volcado y varios PHP contienen credenciales y tokens. No los copies al código nuevo: van en variables de entorno.
 
----
+## Stack previsto
 
-## 🚀 Instalación
+Backend: Java 25, Spring Boot 4.1, Maven, PostgreSQL 16, Spring Data JPA, Flyway, Spring Security + JWT, MapStruct, Lombok, Springdoc, Spring Modulith.
 
-1. Ubícate en la carpeta `www` de tu servidor web y clona el repositorio:
+Frontend: Angular (standalone, signals), PrimeNG, formularios reactivos, interceptor JWT.
 
-   ```bash
-   git clone https://github.com/hubelsolis/facturacion.git
-
-2. Restaura la base de datos:
-
-   En la carpeta BD se encuentra el archivo bdsistema.sql
-
-   Puedes restaurarlo usando:
-   - PhpMyAdmin
-   - HeidiSQL
-   - u otro gestor compatible con MySQL
-
-   (*) la configuracion de conexion a la DB esta en la carpeta Conect\conexion.php, por si le pones clave o cambias los puertos
-
-3. Inicia tu servidor web y accede desde el navegador a:
-   http://localhost/facturacion
-
-   Si estas en laragon puede acceder a las aplicaciones en desarrollo mediante su icono verde en la barra de tareas / www / facturacion 
-
-5. Pruebas Unitarias
-
-   🔧 En implementación.
-
-6. Calidad de Software
-
-   🔧 En implementación.
-
-7. Mantenimiento y Soporte
-
-   El mantenimiento y servicio postventa se realiza según acuerdo entre cliente y distribuidor.
-
-8. Licencia
-
-   Proyecto de uso libre y educativo.
-
-## 🧠 Qué mejoré y por qué
-✔️ Mejoras en arquitectura y llamadas asincronas
-- Estructura clara de MVC, quisiera haberme subido a laravel pero es un lio el cambio de versiones en los hosting web.
-- Actualmente estoy cambiando los ajax por fetch, hay algunos errores que estare subsanando, el motivo dejar de lado a Jquery
-- A futuro deseo cambiar la estructura de la DB por una 100% compatible con UBL y la RS 236-2004 de SUNAT.
-
-✔️ Títulos más claros
-- Uso de emojis moderados (GitHub-friendly)
-- Jerarquía correcta (`#`, `##`)
-
-✔️ Markdown correcto
-- Bloques de código para comandos
-- URLs claras
-- Listas limpias
-
-✔️ Imagen más seria del proyecto
-- Ideal para portafolio o referencia universitaria
-
+XBuilder y XSender de Project OpenUBL publican un starter pensado para Jakarta XML SOAP 1.4 / WS 2.3 y un quickstart en Java 11. Eso no está alineado con Spring Boot 4 y Jakarta EE 11. No se reemplazan por una implementación propia hasta confirmarlo antes de la Fase 3.
