@@ -1,0 +1,40 @@
+<div class="shell" [class.shell--menu-cerrado]="!menuAbierto()">
+  <p-toolbar styleClass="shell__header">
+    <ng-template #start>
+      <p-button
+        icon="pi pi-bars"
+        [text]="true"
+        severity="secondary"
+        ariaLabel="Mostrar u ocultar menú"
+        (onClick)="alternarMenu()"
+      />
+      <span class="shell__marca ml-2">Facturación electrónica</span>
+    </ng-template>
+    <ng-template #end>
+      @if (usuario(); as u) {
+        <div class="flex align-items-center gap-2">
+          <p-avatar [label]="inicial()" shape="circle" />
+          <div class="hidden sm:flex flex-column line-height-2">
+            <span class="font-medium">{{ u.nombre }}</span>
+            <small class="text-color-secondary">{{ u.rol }}</small>
+          </div>
+          <p-button
+            icon="pi pi-sign-out"
+            [text]="true"
+            severity="secondary"
+            ariaLabel="Cerrar sesión"
+            (onClick)="salir()"
+          />
+        </div>
+      }
+    </ng-template>
+  </p-toolbar>
+
+  <aside class="shell__menu" aria-label="Menú principal">
+    <p-panelmenu [model]="menu()" [multiple]="false" styleClass="w-full" />
+  </aside>
+
+  <main class="shell__contenido">
+    <router-outlet />
+  </main>
+</div>

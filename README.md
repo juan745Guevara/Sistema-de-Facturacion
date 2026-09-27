@@ -21,7 +21,7 @@ Sistema-de-Facturacion/
 | Fase | Contenido | Estado |
 | --- | --- | --- |
 | 0 | Reorganización y análisis del legado | Hecha |
-| 1 | Esqueleto backend y Angular | Pendiente |
+| 1 | Esqueleto backend y Angular | Hecha |
 | 2 | Empresa, catálogo, clientes, proveedores | Pendiente |
 | 3 | Ventas y SUNAT (factura y boleta) | Pendiente |
 | 4 | Notas, resumen diario y comunicación de baja | Pendiente |
@@ -30,6 +30,36 @@ Sistema-de-Facturacion/
 | 7 | Migración de datos, README final y revisión | Pendiente |
 
 El análisis de reglas de negocio, tablas y flujo SUNAT está en [docs/analisis-sistema-antiguo.md](docs/analisis-sistema-antiguo.md).
+
+## Cómo correr el backend
+
+Requiere JDK 25 o superior y Docker. El proyecto compila con `release 25`; con JDK 27 también funciona gracias a Lombok 1.18.48.
+
+```powershell
+cd backend
+Copy-Item .env.example .env        # completar DB_PASSWORD, JWT_SECRET y ADMIN_*
+docker compose -f docker-compose.dev.yml --env-file .env up -d
+.\mvnw.cmd spring-boot:run
+```
+
+- El perfil `dev` está activo por defecto, lee `backend/.env` y apunta a SUNAT beta.
+- Flyway crea el esquema al arrancar.
+- Si la tabla de usuarios está vacía, se crea el administrador definido en `ADMIN_USERNAME` y `ADMIN_PASSWORD` (mínimo 12 caracteres).
+- La API queda en `http://localhost:8080/api` y la documentación en `http://localhost:8080/swagger-ui.html`.
+
+Tests: `.\mvnw.cmd test`. Los de integración usan Testcontainers y se omiten si Docker no está corriendo.
+
+## Cómo correr el frontend
+
+Requiere Node 22 o superior.
+
+```powershell
+cd frontend
+npm install
+npm start          # http://localhost:4200, llama al backend en localhost:8080
+```
+
+Tests: `npm test`. Build de producción: `npm run build`. En producción, el frontend espera el API en `/api`, en el mismo dominio.
 
 ## Cómo correr el sistema antiguo
 
@@ -42,10 +72,10 @@ Requiere PHP 8, MariaDB/MySQL y Apache (Laragon, XAMPP o WAMP).
 
 El volcado y varios PHP contienen credenciales y tokens. No los copies al código nuevo: van en variables de entorno.
 
-## Stack previsto
+## Stack
 
-Backend: Java 25, Spring Boot 4.1, Maven, PostgreSQL 16, Spring Data JPA, Flyway, Spring Security + JWT, MapStruct, Lombok, Springdoc, Spring Modulith.
+Backend: Java 25, Spring Boot 4.1, Maven, PostgreSQL 16, Spring Data JPA, Flyway, Spring Security con JWT (resource server, HS256), MapStruct, Lombok, Springdoc y Spring Modulith. Cada módulo vive en `pe.facturacion.<modulo>` con capas `domain`, `application` e `infrastructure`, y tiene su propio esquema en PostgreSQL. `ModularidadTest` verifica que ningún módulo use clases internas de otro.
 
-Frontend: Angular (standalone, signals), PrimeNG, formularios reactivos, interceptor JWT.
+Frontend: Angular 22 (standalone, signals, zoneless), PrimeNG 22 con el tema Aura, PrimeFlex, formularios reactivos, interceptor JWT, guards por rol y carga diferida por feature. Los tests usan Vitest.
 
 XBuilder y XSender de Project OpenUBL publican un starter pensado para Jakarta XML SOAP 1.4 / WS 2.3 y un quickstart en Java 11. Eso no está alineado con Spring Boot 4 y Jakarta EE 11. No se reemplazan por una implementación propia hasta confirmarlo antes de la Fase 3.
