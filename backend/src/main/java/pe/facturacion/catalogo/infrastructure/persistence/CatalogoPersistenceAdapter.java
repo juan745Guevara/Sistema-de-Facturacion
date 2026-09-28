@@ -1,5 +1,6 @@
 package pe.facturacion.catalogo.infrastructure.persistence;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -143,6 +144,12 @@ final class CatalogoPersistenceAdapter {
 		@Transactional
 		public void eliminar(Long id) {
 			repositorio.deleteById(id);
+		}
+
+		@Override
+		@Transactional
+		public boolean ajustarStock(Long id, BigDecimal variacion) {
+			return repositorio.ajustarStock(id, variacion) == 1;
 		}
 
 	}

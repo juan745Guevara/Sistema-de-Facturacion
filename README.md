@@ -23,7 +23,7 @@ Sistema-de-Facturacion/
 | 0 | Reorganización y análisis del legado | Hecha |
 | 1 | Esqueleto backend y Angular | Hecha |
 | 2 | Empresa, catálogo, clientes, proveedores (y usuarios) | Hecha |
-| 3 | Ventas y SUNAT (factura y boleta) | Pendiente |
+| 3 | Ventas y SUNAT (factura y boleta) | Hecha |
 | 4 | Notas, resumen diario y comunicación de baja | Pendiente |
 | 5 | Guías, compras y cotizaciones | Pendiente |
 | 6 | Reportes, dashboard, PDF, Excel y correo | Pendiente |
@@ -94,4 +94,11 @@ Backend: Java 25, Spring Boot 4.1, Maven, PostgreSQL 16, Spring Data JPA, Flyway
 
 Frontend: Angular 22 (standalone, signals, zoneless), PrimeNG 22 con el tema Aura, PrimeFlex, formularios reactivos, interceptor JWT, guards por rol y carga diferida por feature. Los tests usan Vitest.
 
-XBuilder y XSender de Project OpenUBL publican un starter pensado para Jakarta XML SOAP 1.4 / WS 2.3 y un quickstart en Java 11. Eso no está alineado con Spring Boot 4 y Jakarta EE 11. No se reemplazan por una implementación propia hasta confirmarlo antes de la Fase 3.
+OpenUBL (XBuilder/XSender) no encaja con Spring Boot 4 ni Jakarta EE 11. El XML UBL 2.1, la firma XMLDSig y el SOAP de `billService` se implementaron a mano con DOM, `javax.xml.crypto` y `RestClient`.
+
+### Ventas (Fase 3)
+
+- Factura (`01`), boleta (`03`) y nota de venta (`NV`). El backend recalcula todos los importes; el frontend solo previsualiza.
+- Factura exige RUC. Boleta sin documento no puede llegar a S/ 700. El correlativo se consume aunque SUNAT rechace.
+- Sin certificado o usuario SOL la venta queda `PENDIENTE` y se reenvía desde Estados SUNAT.
+- El stock se descuenta al emitir y solo se devuelve si el CDR queda `RECHAZADO` o `ANULADO`.

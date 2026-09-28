@@ -1,5 +1,6 @@
 package pe.facturacion.catalogo.application.port.out;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import pe.facturacion.catalogo.domain.model.Producto;
@@ -19,5 +20,8 @@ public interface ProductoRepositoryPort {
 	Producto guardar(Producto producto);
 
 	void eliminar(Long id);
+
+	/** Devuelve {@code false} si el producto no existe. */
+	boolean ajustarStock(Long id, BigDecimal variacion);
 
 }
