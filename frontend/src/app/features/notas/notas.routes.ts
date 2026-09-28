@@ -1,9 +1,17 @@
 import { Routes } from '@angular/router';
 
-import { rutaPendiente } from '../../shared/components/pagina-pendiente/ruta-pendiente';
-
 export default [
-  rutaPendiente('credito', 'Emitir nota de crédito', 'Fase 4'),
-  rutaPendiente('debito', 'Emitir nota de débito', 'Fase 4'),
+  {
+    path: 'credito',
+    title: 'Emitir nota de crédito',
+    loadComponent: () => import('./emitir/emitir-nota.page').then((m) => m.EmitirNotaPage),
+    data: { tipo: 'NOTA_CREDITO' },
+  },
+  {
+    path: 'debito',
+    title: 'Emitir nota de débito',
+    loadComponent: () => import('./emitir/emitir-nota.page').then((m) => m.EmitirNotaPage),
+    data: { tipo: 'NOTA_DEBITO' },
+  },
   { path: '', pathMatch: 'full', redirectTo: 'credito' },
 ] satisfies Routes;

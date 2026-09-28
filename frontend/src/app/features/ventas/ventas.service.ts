@@ -88,7 +88,11 @@ export class VentasService {
     return this.http.get<Venta>(`${this.url}/${id}`);
   }
 
-  series(tipo: TipoVenta): Observable<Serie[]> {
+  series(tipo: string): Observable<Serie[]> {
     return this.http.get<Serie[]>(`${environment.apiUrl}/series`, { params: parametros({ tipo }) });
+  }
+
+  obtenerPorNumero(tipo: string, serie: string, correlativo: number): Observable<Venta> {
+    return this.http.get<Venta>(`${this.url}/numero`, { params: parametros({ tipo, serie, correlativo }) });
   }
 }

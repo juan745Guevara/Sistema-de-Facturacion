@@ -1,0 +1,62 @@
+<h1 class="text-2xl font-semibold mt-0 mb-3">{{ titulo() }}</h1>
+
+<form [formGroup]="formulario" (ngSubmit)="emitir()" novalidate>
+  <div class="grid formgrid p-fluid">
+    <div class="field col-12 md:col-3">
+      <label for="serie">Serie</label>
+      <p-select inputId="serie" formControlName="serie" [options]="series()" optionLabel="serie" optionValue="serie" />
+    </div>
+    <div class="field col-12 md:col-3">
+      <label for="tipoReferencia">Comprobante</label>
+      <p-select
+        inputId="tipoReferencia"
+        formControlName="tipoReferencia"
+        [options]="tiposReferencia"
+        optionLabel="etiqueta"
+        optionValue="valor"
+      />
+    </div>
+    <div class="field col-12 md:col-2">
+      <label for="serieReferencia">Serie</label>
+      <input id="serieReferencia" class="p-inputtext w-full" formControlName="serieReferencia" maxlength="4" />
+    </div>
+    <div class="field col-12 md:col-2">
+      <label for="correlativoReferencia">Número</label>
+      <p-inputnumber inputId="correlativoReferencia" formControlName="correlativoReferencia" [min]="1" [useGrouping]="false" />
+    </div>
+    <div class="field col-12 md:col-2 flex align-items-end">
+      <p-button type="button" label="Buscar" icon="pi pi-search" (onClick)="buscarOrigen()" />
+    </div>
+    <div class="field col-12 md:col-6">
+      <label for="codigoMotivo">Motivo</label>
+      <p-select
+        inputId="codigoMotivo"
+        formControlName="codigoMotivo"
+        [options]="motivos()"
+        optionLabel="descripcion"
+        optionValue="valor"
+        placeholder="Motivo SUNAT"
+        (onChange)="alCambiarMotivo()"
+      />
+    </div>
+  </div>
+
+  @if (origen(); as venta) {
+    <p class="text-color-secondary">
+      {{ venta.tipo }} {{ venta.serie }}-{{ venta.correlativo }} · {{ venta.clienteNombre }} ·
+      {{ venta.totales.total | monto }}
+    </p>
+  }
+
+  @if (calculo(); as c) {
+    <div class="flex flex-column align-items-end gap-1 mb-3 text-sm">
+      <div>Gravadas: <strong>{{ c.totales.gravadas | monto }}</strong></div>
+      <div>IGV: <strong>{{ c.totales.igv | monto }}</strong></div>
+      <div class="text-xl">Total: <strong>{{ c.totales.total | monto }}</strong></div>
+    </div>
+  }
+
+  <div class="flex justify-content-end">
+    <p-button type="submit" [label]="titulo()" icon="pi pi-send" [loading]="emitiendo()" [disabled]="!origen()" />
+  </div>
+</form>

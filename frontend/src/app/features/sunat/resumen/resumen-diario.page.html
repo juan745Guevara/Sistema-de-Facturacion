@@ -1,0 +1,73 @@
+<h1 class="text-2xl font-semibold mt-0 mb-3">Resumen diario de boletas</h1>
+
+<div class="flex flex-wrap align-items-end gap-2 mb-3">
+  <div>
+    <label class="block mb-1" for="fecha">Fecha</label>
+    <p-datepicker inputId="fecha" [(ngModel)]="fecha" dateFormat="dd/mm/yy" [showIcon]="true" />
+  </div>
+  <p-button label="Ver boletas" icon="pi pi-search" (onClick)="cargarPendientes()" />
+  <p-button
+    label="Generar y enviar"
+    icon="pi pi-send"
+    [loading]="generando()"
+    [disabled]="pendientes().length === 0"
+    (onClick)="generar()"
+  />
+</div>
+
+<p-table [value]="pendientes()" styleClass="mb-4">
+  <ng-template #header>
+    <tr>
+      <th>Boleta</th>
+      <th>Cliente</th>
+      <th class="text-right">Total</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-doc>
+    <tr>
+      <td>{{ doc.serie }}-{{ doc.correlativo }}</td>
+      <td>{{ doc.cliente }}</td>
+      <td class="text-right">{{ doc.total }}</td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="3" class="text-center text-color-secondary">Elige una fecha y pulsa Ver boletas</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<h2 class="text-xl mt-0 mb-2">Envíos anteriores</h2>
+<p-table
+  [value]="listado.filas()"
+  [lazy]="true"
+  (onLazyLoad)="listado.cambiarPagina($event)"
+  [paginator]="true"
+  [first]="listado.primero()"
+  [rows]="listado.tamanio()"
+  [totalRecords]="listado.total()"
+  [loading]="listado.cargando()"
+>
+  <ng-template #header>
+    <tr>
+      <th>Lote</th>
+      <th>Referencia</th>
+      <th>Estado</th>
+      <th>Ticket</th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-lote>
+    <tr>
+      <td>{{ lote.tipo }} {{ lote.serie }}-{{ lote.correlativo }}</td>
+      <td>{{ lote.fechaReferencia }}</td>
+      <td><p-tag [value]="lote.estado" [severity]="severidad(lote.estado)" /></td>
+      <td>{{ lote.ticket }}</td>
+      <td>
+        @if (lote.estado === 'EN_PROCESO') {
+          <p-button label="Consultar ticket" [text]="true" (onClick)="consultar(lote)" />
+        }
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

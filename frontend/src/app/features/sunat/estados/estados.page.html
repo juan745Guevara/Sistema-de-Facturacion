@@ -47,6 +47,15 @@
             (onClick)="reenviar(doc)"
           />
         }
+        @if (doc.estado === 'ACEPTADO' || doc.estado === 'OBSERVADO') {
+          <p-button
+            label="Dar de baja"
+            icon="pi pi-times"
+            [text]="true"
+            severity="danger"
+            (onClick)="darBaja(doc)"
+          />
+        }
       </td>
     </tr>
   </ng-template>

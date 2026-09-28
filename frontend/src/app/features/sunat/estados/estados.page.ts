@@ -36,6 +36,20 @@ export class EstadosSunatPage {
     this.listado.reiniciar();
   }
 
+  protected darBaja(doc: DocumentoSunat): void {
+    const motivo = window.prompt('Motivo de la baja');
+    if (!motivo) {
+      return;
+    }
+    this.sunat.darBaja(doc.tipo, doc.serie, doc.correlativo, motivo).subscribe({
+      next: (lote) => {
+        this.notificador.exito(`Baja ${lote.serie}-${lote.correlativo}: ${lote.estado}`);
+        this.listado.recargar();
+      },
+      error: (e: unknown) => this.notificador.error(e, 'No se pudo comunicar la baja'),
+    });
+  }
+
   protected reenviar(doc: DocumentoSunat): void {
     this.sunat.reenviar(doc.tipo, doc.serie, doc.correlativo).subscribe({
       next: (actualizado) => {

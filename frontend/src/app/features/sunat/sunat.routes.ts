@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
 
-import { rutaPendiente } from '../../shared/components/pagina-pendiente/ruta-pendiente';
-
 export default [
   {
     path: 'estados',
@@ -13,6 +11,10 @@ export default [
     title: 'Consultar comprobantes',
     loadComponent: () => import('./consulta/consulta.page').then((m) => m.ConsultaSunatPage),
   },
-  rutaPendiente('resumen-diario', 'Resumen diario de boletas', 'Fase 4'),
+  {
+    path: 'resumen-diario',
+    title: 'Resumen diario de boletas',
+    loadComponent: () => import('./resumen/resumen-diario.page').then((m) => m.ResumenDiarioPage),
+  },
   { path: '', pathMatch: 'full', redirectTo: 'estados' },
 ] satisfies Routes;

@@ -35,4 +35,12 @@ export class CatalogosSunatService {
   readonly tiposAfectacionIgv$: Observable<OpcionCatalogo[]> = this.http
     .get<OpcionCatalogo[]>(`${this.url}/tipos-afectacion-igv`)
     .pipe(shareReplay(1));
+
+  readonly motivosNotaCredito$: Observable<OpcionCatalogo[]> = this.http
+    .get<OpcionCatalogo[]>(`${this.url}/motivos-nota-credito`)
+    .pipe(shareReplay(1));
+
+  readonly motivosNotaDebito$: Observable<OpcionCatalogo[]> = this.http
+    .get<OpcionCatalogo[]>(`${this.url}/motivos-nota-debito`)
+    .pipe(shareReplay(1));
 }
