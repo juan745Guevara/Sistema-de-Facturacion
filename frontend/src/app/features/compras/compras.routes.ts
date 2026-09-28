@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
 
-import { rutaPendiente } from '../../shared/components/pagina-pendiente/ruta-pendiente';
-
 export default [
-  rutaPendiente('nueva', 'Nueva compra', 'Fase 5'),
+  {
+    path: 'nueva',
+    title: 'Nueva compra',
+    loadComponent: () => import('./nueva/nueva-compra.page').then((m) => m.NuevaCompraPage),
+  },
   {
     path: 'proveedores',
     title: 'Proveedores',

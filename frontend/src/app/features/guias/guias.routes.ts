@@ -1,8 +1,14 @@
 import { Routes } from '@angular/router';
 
-import { rutaPendiente } from '../../shared/components/pagina-pendiente/ruta-pendiente';
-
 export default [
-  rutaPendiente('', 'Guías de remisión', 'Fase 5'),
-  rutaPendiente('nueva', 'Crear guía de remisión', 'Fase 5'),
+  {
+    path: '',
+    title: 'Guías de remisión',
+    loadComponent: () => import('./lista/guias.page').then((m) => m.GuiasPage),
+  },
+  {
+    path: 'nueva',
+    title: 'Nueva guía',
+    loadComponent: () => import('./nueva/nueva-guia.page').then((m) => m.NuevaGuiaPage),
+  },
 ] satisfies Routes;
