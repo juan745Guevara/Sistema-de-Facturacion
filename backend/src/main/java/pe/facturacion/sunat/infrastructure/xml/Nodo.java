@@ -66,6 +66,11 @@ final class Nodo {
 		return cbc(nombre, importe(monto)).attr("currencyID", moneda.name());
 	}
 
+	Nodo texto(String valor) {
+		elemento.setTextContent(valor);
+		return this;
+	}
+
 	Nodo attr(String nombre, String valor) {
 		elemento.setAttribute(nombre, valor);
 		return this;

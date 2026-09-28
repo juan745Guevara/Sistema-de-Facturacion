@@ -11,6 +11,8 @@ public interface ConsultarVentasUseCase {
 
 	Venta obtener(Long id);
 
+	Venta obtener(TipoComprobante tipo, String serie, int correlativo);
+
 	Pagina<Venta> buscar(Filtro filtro, ConsultaPaginada consulta);
 
 	record Filtro(TipoComprobante tipo, LocalDate desde, LocalDate hasta) {

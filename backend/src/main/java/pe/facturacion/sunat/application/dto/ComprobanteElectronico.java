@@ -42,7 +42,8 @@ public record ComprobanteElectronico(
 		Objects.requireNonNull(totales, "totales");
 		lineas = List.copyOf(lineas);
 		cuotas = cuotas == null ? List.of() : List.copyOf(cuotas);
-		if (!tipo.electronico() || tipo == TipoComprobante.GUIA_REMISION) {
+		if (!tipo.electronico() || tipo == TipoComprobante.GUIA_REMISION
+				|| tipo == TipoComprobante.RESUMEN_DIARIO || tipo == TipoComprobante.COMUNICACION_BAJA) {
 			throw new IllegalArgumentException("No es un comprobante de pago electrónico: " + tipo);
 		}
 		if ((tipo == TipoComprobante.NOTA_CREDITO || tipo == TipoComprobante.NOTA_DEBITO) != (referencia != null)) {

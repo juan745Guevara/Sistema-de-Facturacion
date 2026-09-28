@@ -13,6 +13,8 @@ public enum TipoComprobante {
 	NOTA_CREDITO("07", "Nota de crédito", true),
 	NOTA_DEBITO("08", "Nota de débito", true),
 	GUIA_REMISION("09", "Guía de remisión remitente", true),
+	RESUMEN_DIARIO("RC", "Resumen diario", true),
+	COMUNICACION_BAJA("RA", "Comunicación de baja", true),
 	NOTA_VENTA("NV", "Nota de venta", false),
 	COTIZACION("CT", "Cotización", false);
 

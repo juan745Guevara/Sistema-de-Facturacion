@@ -64,6 +64,13 @@ class VentaController {
 				.map(VentaResponse::desde);
 	}
 
+	@Operation(summary = "Obtiene una venta por tipo, serie y correlativo")
+	@GetMapping("/numero")
+	VentaResponse obtenerPorNumero(@RequestParam TipoComprobante tipo, @RequestParam String serie,
+			@RequestParam int correlativo) {
+		return VentaResponse.desde(consultar.obtener(tipo, serie, correlativo));
+	}
+
 	@Operation(summary = "Obtiene una venta")
 	@GetMapping("/{id}")
 	VentaResponse obtener(@PathVariable Long id) {

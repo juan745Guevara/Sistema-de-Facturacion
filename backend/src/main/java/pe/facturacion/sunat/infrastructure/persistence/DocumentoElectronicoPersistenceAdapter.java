@@ -1,5 +1,6 @@
 package pe.facturacion.sunat.infrastructure.persistence;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import pe.facturacion.shared.application.dto.ConsultaPaginada;
 import pe.facturacion.shared.application.dto.Pagina;
 import pe.facturacion.shared.domain.exception.RecursoNoEncontradoException;
+import pe.facturacion.shared.domain.model.sunat.EstadoSunat;
 import pe.facturacion.shared.domain.model.sunat.TipoComprobante;
 import pe.facturacion.shared.infrastructure.persistence.Paginas;
 import pe.facturacion.sunat.application.dto.ComprobanteElectronico;
@@ -62,6 +64,13 @@ class DocumentoElectronicoPersistenceAdapter implements DocumentoElectronicoRepo
 				Paginas.solicitud(consulta, Sort.by("fechaEmision").descending().and(Sort.by("serie"))
 						.and(Sort.by("correlativo").descending()))),
 				this::aDominio);
+	}
+
+	@Override
+	public List<DocumentoElectronico> listar(TipoComprobante tipo, LocalDate fecha, EstadoSunat estado) {
+		return repositorio.findByTipoAndFechaEmisionAndEstado(tipo, fecha, estado).stream()
+				.map(this::aDominio)
+				.toList();
 	}
 
 	@Override

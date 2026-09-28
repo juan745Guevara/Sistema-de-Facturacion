@@ -24,7 +24,7 @@ Sistema-de-Facturacion/
 | 1 | Esqueleto backend y Angular | Hecha |
 | 2 | Empresa, catálogo, clientes, proveedores (y usuarios) | Hecha |
 | 3 | Ventas y SUNAT (factura y boleta) | Hecha |
-| 4 | Notas, resumen diario y comunicación de baja | Pendiente |
+| 4 | Notas, resumen diario y comunicación de baja | Hecha |
 | 5 | Guías, compras y cotizaciones | Pendiente |
 | 6 | Reportes, dashboard, PDF, Excel y correo | Pendiente |
 | 7 | Migración de datos, README final y revisión | Pendiente |
@@ -95,6 +95,12 @@ Backend: Java 25, Spring Boot 4.1, Maven, PostgreSQL 16, Spring Data JPA, Flyway
 Frontend: Angular 22 (standalone, signals, zoneless), PrimeNG 22 con el tema Aura, PrimeFlex, formularios reactivos, interceptor JWT, guards por rol y carga diferida por feature. Los tests usan Vitest.
 
 OpenUBL (XBuilder/XSender) no encaja con Spring Boot 4 ni Jakarta EE 11. El XML UBL 2.1, la firma XMLDSig y el SOAP de `billService` se implementaron a mano con DOM, `javax.xml.crypto` y `RestClient`.
+
+### Notas y lotes SUNAT (Fase 4)
+
+- Nota de crédito (`07`) y de débito (`08`) sobre factura o boleta, con motivo de los catálogos 09 y 10.
+- La serie de la nota debe empezar con F o B según el comprobante de origen. Una anulación o devolución total copia las líneas y, si aplica, devuelve stock.
+- Resumen diario `RC` de boletas pendientes (`sendSummary` + `getStatus`) y comunicación de baja `RA` de facturas y notas aceptadas.
 
 ### Ventas (Fase 3)
 

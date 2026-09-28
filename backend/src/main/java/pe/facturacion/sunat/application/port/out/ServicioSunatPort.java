@@ -14,4 +14,18 @@ public interface ServicioSunatPort {
 	 */
 	RespuestaSunat enviarComprobante(String rucEmisor, String nombreArchivo, byte[] xmlFirmado);
 
+	/**
+	 * {@code sendSummary}: resumen diario o comunicación de baja. Devuelve el ticket de consulta.
+	 *
+	 * @param nombreArchivo nombre sin extensión ({@code RUC-RC-YYYYMMDD-N} o {@code RUC-RA-YYYYMMDD-N})
+	 */
+	String enviarResumen(String rucEmisor, String nombreArchivo, byte[] xmlFirmado);
+
+	/**
+	 * {@code getStatus}: consulta el ticket de un resumen o baja.
+	 *
+	 * @return respuesta con CDR si ya resolvió; {@code null} si sigue en proceso
+	 */
+	RespuestaSunat consultarTicket(String rucEmisor, String ticket);
+
 }

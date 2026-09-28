@@ -78,6 +78,38 @@ public class ClienteSoapSunat implements ServicioSunatPort {
 		return leerCdr(cdr);
 	}
 
+	@Override
+	public String enviarResumen(String rucEmisor, String nombreArchivo, byte[] xmlFirmado) {
+		Document respuesta = invocar(rucEmisor, "sendSummary", nombreArchivo + ".zip",
+				Base64.getEncoder().encodeToString(comprimir(nombreArchivo + ".xml", xmlFirmado)));
+		String ticket = Xml.texto(respuesta, "ticket");
+		if (ticket == null || ticket.isBlank()) {
+			throw new ErrorComunicacionSunat(null, "SUNAT respondió el resumen sin ticket");
+		}
+		return ticket.trim();
+	}
+
+	@Override
+	public RespuestaSunat consultarTicket(String rucEmisor, String ticket) {
+		Document respuesta = invocar(rucEmisor, "getStatus", ticket, ticket);
+		String codigo = Xml.texto(respuesta, "statusCode");
+		if (codigo == null) {
+			throw new ErrorComunicacionSunat(null, "SUNAT respondió el ticket sin código de estado");
+		}
+		if ("98".equals(codigo)) {
+			return null;
+		}
+		String contenido = Xml.texto(respuesta, "content");
+		if (contenido == null || contenido.isBlank()) {
+			if ("99".equals(codigo)) {
+				return RespuestaSunat.rechazada("99", "SUNAT rechazó el resumen o la baja");
+			}
+			return null;
+		}
+		byte[] cdr = Base64.getMimeDecoder().decode(contenido);
+		return leerCdr(cdr);
+	}
+
 	/** Lee el {@code R-*.xml} del zip devuelto por SUNAT. */
 	static RespuestaSunat leerCdr(byte[] cdr) {
 		Document constancia = Xml.leer(descomprimirXml(cdr));

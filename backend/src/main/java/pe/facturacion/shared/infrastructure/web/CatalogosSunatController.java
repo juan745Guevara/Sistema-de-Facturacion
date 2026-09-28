@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import pe.facturacion.shared.domain.model.sunat.MotivoNotaCredito;
+import pe.facturacion.shared.domain.model.sunat.MotivoNotaDebito;
 import pe.facturacion.shared.domain.model.sunat.TipoAfectacionIgv;
 import pe.facturacion.shared.domain.model.sunat.TipoDocumentoIdentidad;
 
@@ -33,6 +35,22 @@ class CatalogosSunatController {
 	@GetMapping("/tipos-afectacion-igv")
 	List<OpcionCatalogo> tiposAfectacionIgv() {
 		return Arrays.stream(TipoAfectacionIgv.values())
+				.map(t -> new OpcionCatalogo(t.name(), t.codigo(), t.descripcion()))
+				.toList();
+	}
+
+	@Operation(summary = "Catálogo 09: motivos de nota de crédito")
+	@GetMapping("/motivos-nota-credito")
+	List<OpcionCatalogo> motivosNotaCredito() {
+		return Arrays.stream(MotivoNotaCredito.values())
+				.map(t -> new OpcionCatalogo(t.name(), t.codigo(), t.descripcion()))
+				.toList();
+	}
+
+	@Operation(summary = "Catálogo 10: motivos de nota de débito")
+	@GetMapping("/motivos-nota-debito")
+	List<OpcionCatalogo> motivosNotaDebito() {
+		return Arrays.stream(MotivoNotaDebito.values())
 				.map(t -> new OpcionCatalogo(t.name(), t.codigo(), t.descripcion()))
 				.toList();
 	}

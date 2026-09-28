@@ -13,15 +13,19 @@ import pe.facturacion.empresa.application.port.in.GestionarEmpresaUseCase;
 import pe.facturacion.shared.application.port.out.Transacciones;
 import pe.facturacion.sunat.application.port.in.ConsultarDocumentosUseCase;
 import pe.facturacion.sunat.application.port.in.EnviarDocumentoUseCase;
+import pe.facturacion.sunat.application.port.in.GestionarLotesUseCase;
 import pe.facturacion.sunat.application.port.in.RegistrarDocumentoUseCase;
 import pe.facturacion.sunat.application.port.out.DocumentoElectronicoRepositoryPort;
 import pe.facturacion.sunat.application.port.out.EmisorPort;
 import pe.facturacion.sunat.application.port.out.EventosPort;
 import pe.facturacion.sunat.application.port.out.FirmaDigitalPort;
+import pe.facturacion.sunat.application.port.out.GeneradorXmlLotePort;
 import pe.facturacion.sunat.application.port.out.GeneradorXmlPort;
+import pe.facturacion.sunat.application.port.out.LoteRepositoryPort;
 import pe.facturacion.sunat.application.port.out.ServicioSunatPort;
 import pe.facturacion.sunat.application.usecase.ConsultarDocumentosService;
 import pe.facturacion.sunat.application.usecase.EnviarDocumentoService;
+import pe.facturacion.sunat.application.usecase.GestionarLotesService;
 import pe.facturacion.sunat.application.usecase.RegistrarDocumentoService;
 import pe.facturacion.sunat.domain.model.Emisor;
 import pe.facturacion.sunat.infrastructure.firma.FirmaXmlDsig;
@@ -46,6 +50,14 @@ class SunatConfig {
 			GeneradorXmlPort generador, FirmaDigitalPort firma, ServicioSunatPort sunat, EventosPort eventos,
 			Transacciones transacciones, Clock reloj) {
 		return new EnviarDocumentoService(documentos, emisores, generador, firma, sunat, eventos, transacciones, reloj);
+	}
+
+	@Bean
+	GestionarLotesUseCase gestionarLotesUseCase(DocumentoElectronicoRepositoryPort documentos, LoteRepositoryPort lotes,
+			EmisorPort emisores, GeneradorXmlLotePort generador, FirmaDigitalPort firma, ServicioSunatPort sunat,
+			EventosPort eventos, Transacciones transacciones, Clock reloj) {
+		return new GestionarLotesService(documentos, lotes, emisores, generador, firma, sunat, eventos, transacciones,
+				reloj);
 	}
 
 	@Bean
