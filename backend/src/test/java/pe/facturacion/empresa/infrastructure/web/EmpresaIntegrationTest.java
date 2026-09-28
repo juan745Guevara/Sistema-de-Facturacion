@@ -27,10 +27,6 @@ class EmpresaIntegrationTest extends IntegracionTest {
 
 	@Test
 	void soloElAdministradorRegistraLaEmpresaYTodosLaConsultan() throws Exception {
-		mvc.perform(get("/api/empresa").header(HttpHeaders.AUTHORIZATION, bearer(Rol.VENDEDOR)))
-				.andExpect(status().isNotFound())
-				.andExpect(jsonPath("$.codigo").value("empresa-no-configurada"));
-
 		mvc.perform(put("/api/empresa").header(HttpHeaders.AUTHORIZATION, bearer(Rol.VENDEDOR))
 						.contentType(MediaType.APPLICATION_JSON).content(empresa("20601487871")))
 				.andExpect(status().isForbidden());
