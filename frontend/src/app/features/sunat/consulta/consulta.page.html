@@ -1,0 +1,37 @@
+<h1 class="text-2xl font-semibold mt-0 mb-3">Consultar comprobante</h1>
+
+<p-card>
+  <form [formGroup]="formulario" (ngSubmit)="consultar()" novalidate class="grid formgrid p-fluid">
+    <div class="field col-12 md:col-4">
+      <label for="tipoConsulta">Tipo</label>
+      <p-select inputId="tipoConsulta" formControlName="tipo" [options]="tipos" optionLabel="etiqueta" optionValue="valor" />
+    </div>
+    <div class="field col-12 md:col-4">
+      <label for="serieConsulta">Serie</label>
+      <input pInputText id="serieConsulta" formControlName="serie" maxlength="4" />
+    </div>
+    <div class="field col-12 md:col-4">
+      <label for="correlativoConsulta">Correlativo</label>
+      <p-inputnumber inputId="correlativoConsulta" formControlName="correlativo" [min]="1" [useGrouping]="false" />
+    </div>
+    <div class="col-12 flex justify-content-end">
+      <p-button type="submit" label="Consultar" icon="pi pi-search" [loading]="buscando()" />
+    </div>
+  </form>
+</p-card>
+
+@if (documento(); as doc) {
+  <p-card styleClass="mt-3">
+    <div class="flex align-items-center gap-2 mb-2">
+      <strong>{{ doc.tipo }} {{ doc.serie }}-{{ doc.correlativo }}</strong>
+      <p-tag [value]="doc.estado" />
+    </div>
+    <p class="m-0">Emitido: {{ doc.fechaEmision }}</p>
+    @if (doc.mensaje) {
+      <p class="m-0">{{ doc.mensaje }}</p>
+    }
+    @if (doc.hash) {
+      <small class="text-color-secondary">Hash: {{ doc.hash }}</small>
+    }
+  </p-card>
+}

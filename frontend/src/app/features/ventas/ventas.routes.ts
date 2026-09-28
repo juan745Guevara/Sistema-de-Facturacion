@@ -1,10 +1,23 @@
 import { Routes } from '@angular/router';
 
-import { rutaPendiente } from '../../shared/components/pagina-pendiente/ruta-pendiente';
-
 export default [
-  rutaPendiente('factura', 'Emitir factura', 'Fase 3'),
-  rutaPendiente('boleta', 'Emitir boleta', 'Fase 3'),
-  rutaPendiente('nota-venta', 'Emitir nota de venta', 'Fase 3'),
+  {
+    path: 'factura',
+    title: 'Emitir factura',
+    data: { tipo: 'FACTURA' },
+    loadComponent: () => import('./emitir/emitir-comprobante.page').then((m) => m.EmitirComprobantePage),
+  },
+  {
+    path: 'boleta',
+    title: 'Emitir boleta',
+    data: { tipo: 'BOLETA' },
+    loadComponent: () => import('./emitir/emitir-comprobante.page').then((m) => m.EmitirComprobantePage),
+  },
+  {
+    path: 'nota-venta',
+    title: 'Emitir nota de venta',
+    data: { tipo: 'NOTA_VENTA' },
+    loadComponent: () => import('./emitir/emitir-comprobante.page').then((m) => m.EmitirComprobantePage),
+  },
   { path: '', pathMatch: 'full', redirectTo: 'factura' },
 ] satisfies Routes;
