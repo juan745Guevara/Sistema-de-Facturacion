@@ -25,9 +25,9 @@ Sistema-de-Facturacion/
 | 2 | Empresa, catálogo, clientes, proveedores (y usuarios) | Hecha |
 | 3 | Ventas y SUNAT (factura y boleta) | Hecha |
 | 4 | Notas, resumen diario y comunicación de baja | Hecha |
-| 5 | Guías, compras y cotizaciones | Pendiente |
-| 6 | Reportes, dashboard, PDF, Excel y correo | Pendiente |
-| 7 | Migración de datos, README final y revisión | Pendiente |
+| 5 | Guías, compras y cotizaciones | Hecha |
+| 6 | Reportes, dashboard, PDF, Excel y correo | Hecha |
+| 7 | Migración de datos, README final y revisión | Hecha |
 
 El análisis de reglas de negocio, tablas y flujo SUNAT está en [docs/analisis-sistema-antiguo.md](docs/analisis-sistema-antiguo.md).
 
@@ -49,6 +49,7 @@ docker compose -f docker-compose.dev.yml --env-file .env up -d
 
 - La consulta de RUC/DNI (botón de búsqueda en empresa, clientes y proveedores) usa `CONSULTA_DOCUMENTOS_URL` y `CONSULTA_DOCUMENTOS_TOKEN`. Sin token, la API responde 503 y el resto del sistema funciona igual.
 - El certificado, las credenciales SOL y el SMTP solo se configuran con variables de entorno; no se guardan en la base de datos.
+- Sin `SMTP_HOST`, el resto del sistema funciona y `POST /api/reportes/correo` responde 503.
 
 Tests: `.\mvnw.cmd test`. Los de integración usan Testcontainers y se omiten si Docker no está corriendo.
 
@@ -62,6 +63,7 @@ Tests: `.\mvnw.cmd test`. Los de integración usan Testcontainers y se omiten si
 | Clientes | Todos | Todos | ADMINISTRADOR, ESPECIAL |
 | Proveedores | Todos | ADMINISTRADOR, ESPECIAL | ADMINISTRADOR, ESPECIAL |
 | Usuarios | ADMINISTRADOR | ADMINISTRADOR | No se eliminan, se desactivan |
+| Ventas, notas, compras, cotizaciones, guías, reportes | Todos los autenticados | Todos los autenticados | Anular compra: autenticado |
 
 Un usuario desactivado conserva su token hasta que vence (8 horas).
 
@@ -101,6 +103,23 @@ OpenUBL (XBuilder/XSender) no encaja con Spring Boot 4 ni Jakarta EE 11. El XML 
 - Nota de crédito (`07`) y de débito (`08`) sobre factura o boleta, con motivo de los catálogos 09 y 10.
 - La serie de la nota debe empezar con F o B según el comprobante de origen. Una anulación o devolución total copia las líneas y, si aplica, devuelve stock.
 - Resumen diario `RC` de boletas pendientes (`sendSummary` + `getStatus`) y comunicación de baja `RA` de facturas y notas aceptadas.
+
+### Guías, compras y cotizaciones (Fase 5)
+
+- Compra: el usuario tipea serie y número del proveedor. Aumenta stock al registrar y lo revierte al anular. No se envía a SUNAT.
+- Cotización: serie interna `CT` (`C001`). No mueve stock ni se envía a SUNAT.
+- Guía de remisión remitente: serie `T***`, ubigeo de partida y llegada. Queda `PENDIENTE` (el envío REST OAuth a SUNAT no está cableado).
+- Ubigeo: `GET /api/ubigeos?q=` sobre un catálogo sembrado (Lima y otras ciudades).
+
+### Reportes (Fase 6)
+
+- Dashboard en inicio: ventas del día, comprobantes `PENDIENTE`, compras del mes.
+- `GET /api/reportes/ventas` y `/compras` con Excel (`.xlsx`) y PDF (`.pdf`).
+- `POST /api/reportes/correo` adjunta el PDF si hay SMTP.
+
+### Migración de datos (Fase 7)
+
+El mapeo MySQL → PostgreSQL está en [backend/scripts/migracion-datos/README.md](backend/scripts/migracion-datos/README.md). Las contraseñas del legado no se reutilizan: hay que generar BCrypt nuevos.
 
 ### Ventas (Fase 3)
 
