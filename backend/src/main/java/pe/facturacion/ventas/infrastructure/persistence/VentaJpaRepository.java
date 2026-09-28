@@ -18,8 +18,8 @@ interface VentaJpaRepository extends JpaRepository<VentaJpaEntity, Long> {
 	@Query("""
 			select v from VentaJpaEntity v
 			where (:tipo is null or v.tipo = :tipo)
-			  and (:desde is null or v.fechaEmision >= :desde)
-			  and (:hasta is null or v.fechaEmision <= :hasta)
+			  and (cast(:desde as date) is null or v.fechaEmision >= :desde)
+			  and (cast(:hasta as date) is null or v.fechaEmision <= :hasta)
 			  and (:patron is null
 			       or lower(v.clienteNombre) like :patron
 			       or lower(v.clienteNumeroDocumento) like :patron
